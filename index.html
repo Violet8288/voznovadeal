@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voz Juan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #181818;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .audio-container {
+            background-color: #fbb000;
+            padding: 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 450px;
+            border: 4px solid #c10606;
+            position: relative;
+        }
+
+        /* 🎵 Botón Play/Pausa */
+        .play-button {
+            background-color: #c10606;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 20px;
+        }
+
+        .play-button:hover {
+            background-color: #c10606;
+        }
+
+        .wave-animation {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            height: 30px;
+            opacity: 0.3;
+            transition: opacity 0.3s;
+        }
+
+        .wave-bar {
+            width: 5px;
+            height: 10px;
+            background-color: #468c41;
+            border-radius: 3px;
+            animation: wave 1s infinite;
+        }
+
+        .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.6s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.8s; }
+
+        @keyframes wave {
+            0%, 100% { height: 10px; }
+            50% { height: 20px; }
+        }
+
+        .progress-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background-color: #9c3904;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background-color: #ff0505;
+            transition: width 0.1s;
+        }
+
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #fff;
+        }
+
+        /* ✨ Estilo para los emojis */
+        .emoji {
+            font-size: 22px;
+            margin-right: 5px;
+        }
+
+        .emoji-decor {
+            font-size: 30px;
+            position: absolute;
+            top: -10px;
+            right: -10px;
+        }
+
+        .emoji-decor2 {
+            font-size: 30px;
+            position: absolute;
+            top: 65px;
+            right: -0px;
+            color: #3c0404;
+            font-weight: 700;
+        }
+
+        .emoji-decor3 {
+            font-size: 20px;
+            position: absolute;
+            top: 65px;
+            right: -0px;
+            color: #ffffff;
+        }
+
+        .emoji-decor4 {
+            font-size: 15px;
+            position: absolute;
+            top: 70px;
+            right: -5px;
+            color: #744da1;
+        }
+
+        .emoji-decor5 {
+            font-size: 15px;
+            position: absolute;
+            top: 75px;
+            right: 45px;
+            color: #baa0d7;
+        }
+
+        .emoji-decor6 {
+            font-size: 30px;
+            position: absolute;
+            top: 65px;
+            right: 475px;
+            color: #5b1e9c;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="audio-container">
+        <!-- ✨ Decoración con emoji de estrella -->
+
+        <span class="emoji-decor2">  🂾    ꙳ 🍃      •        🂾          •
+
+            🍃         ˚   🂾     ꙳         🍃
+         
+            🂾               •      ˙
+         
+            🂾          🍃               ꙳         
+         </span>
+
+
+        <!-- 🎤 Emoji de micrófono -->
+        <span class="emoji">🥔🎲</span>
+
+        <!-- 🎵 Botón de Play/Pausa -->
+        <button class="play-button" id="playPauseBtn">▶</button>
+
+        <!-- 🌊 Emoji de onda -->
+        <span class="emoji">🎧</span>
+
+        <div class="wave-animation" id="waveContainer">
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="time-info">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:00</span>
+            </div>
+        </div>
+
+        <audio id="audio" src="voznovadeal.mp3"></audio>
+    </div>
+
+    <script>
+        const audio = document.getElementById("audio");
+        const playPauseBtn = document.getElementById("playPauseBtn");
+        const progressBar = document.getElementById("progress");
+        const currentTimeDisplay = document.getElementById("currentTime");
+        const durationDisplay = document.getElementById("duration");
+        const waveContainer = document.getElementById("waveContainer");
+
+        playPauseBtn.addEventListener("click", () => {
+            if (audio.paused) {
+                audio.play().catch(() => alert("El navegador bloqueó la reproducción automática. Toca el botón otra vez."));
+                playPauseBtn.textContent = "||";
+                waveContainer.style.opacity = "1";
+            } else {
+                audio.pause();
+                playPauseBtn.textContent = "▶";
+                waveContainer.style.opacity = "0.3";
+            }
+        });
+
+        audio.addEventListener("timeupdate", () => {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            progressBar.style.width = progress + "%";
+            currentTimeDisplay.textContent = formatTime(audio.currentTime);
+        });
+
+        audio.addEventListener("loadedmetadata", () => {
+            durationDisplay.textContent = formatTime(audio.duration);
+        });
+
+        audio.addEventListener("ended", () => {
+            playPauseBtn.textContent = "▶";
+            progressBar.style.width = "0%";
+            waveContainer.style.opacity = "0.3";
+        });
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+        }
+    </script>
+
+</body>
+</html>
